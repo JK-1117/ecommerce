@@ -1,0 +1,48 @@
+package components
+
+templ StackedShell(h templ.Component) {
+	<div class="w-full lg:bg-teal-950/10 min-h-screen">
+		<div class="w-full bg-teal-950 pb-32">
+			<div class="container mx-auto">
+				<nav class="flex items-center border-b border-white/10 h-16">
+					<h1 class="text-white text-2xl">
+						<a href="/">
+							App Brand
+						</a>
+					</h1>
+					<div class="flex-1 flex text-white font-bold justify-center items-center gap-4" hx-boost="true">
+						<a href="/home">Home</a>
+					</div>
+					<div class="py-4 px-2 text-white">
+						<a
+							href="#"
+							class="text-gray-300 hover:bg-white/20 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+							hx-post="/api/v1/logout"
+						>Logout</a>
+					</div>
+				</nav>
+				<header class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+					@h
+				</header>
+			</div>
+		</div>
+		<div class="-mt-32 w-full bg-transparent">
+			<div class={ "bg-white text-gray-900 mx-auto container", CssCard }>
+				{ children... }
+			</div>
+		</div>
+	</div>
+}
+
+templ Heading(title string) {
+	<div class="lg:flex lg:items-center lg:justify-between">
+		<div class="min-w-0 flex-1">
+			<h2 class="text-2xl font-bold leading-7 text-white sm:truncate sm:text-3xl sm:tracking-tight">
+				{ title }
+			</h2>
+		</div>
+		<div class="mt-5 flex lg:ml-4 lg:mt-0">
+			{ children... }
+		</div>
+	</div>
+}

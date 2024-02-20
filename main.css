@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.htmx-indicator {
+  display: none;
+}
+.htmx-request .htmx-indicator {
+  display: initial;
+}
+.htmx-request.htmx-indicator {
+  display: initial;
+}
+.htmx-result {
+  display: initial;
+}
+.htmx-request .htmx-result {
+  display: none;
+}
+.htmx-request.htmx-result {
+  display: none;
+}

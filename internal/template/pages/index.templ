@@ -1,0 +1,24 @@
+package pages
+
+import "os"
+
+templ Index() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link rel="stylesheet" href="assets/css/style.css"/>
+			if os.Getenv("APP_ENV") == "production" {
+				<script src="/assets/js/htmx.min.js"></script>
+				<script src="/assets/js/include-vals.min.js"></script>
+			} else {
+				<script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.js" crossorigin="anonymous"></script>
+				<script src="https://unpkg.com/htmx.org/dist/ext/include-vals.js"></script>
+			}
+		</head>
+		<body>
+			{ children... }
+		</body>
+	</html>
+}

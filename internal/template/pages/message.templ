@@ -1,0 +1,41 @@
+package pages
+
+import (
+	"github.com/JK-1117/go-htmx-base/internal/template/components"
+	"strconv"
+)
+
+type MessagePageParams struct {
+	StatusCode int
+	Title      string
+	Message    string
+	Link       string
+	LinkLabel  string
+	ShowHome   bool
+	HideShell  bool
+}
+
+templ MessagePage(p MessagePageParams) {
+	@Index() {
+		<title>App Brand | { p.Title }</title>
+		<main class="grid min-h-screen place-items-center bg-teal-950/10 px-6 py-24 sm:py-32 lg:px-8">
+			<div class="text-center">
+				if p.StatusCode != 0 {
+					<p class="text-base font-semibold text-teal-700">{ strconv.Itoa(p.StatusCode) }</p>
+				}
+				<h1 class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">{ p.Title }</h1>
+				<p class="mt-6 text-base leading-7 text-gray-600">{ p.Message }</p>
+				<div class="mt-10 flex items-center justify-center gap-x-6">
+					if p.ShowHome {
+						<a href="/" class={ components.CssPrimaryButton }>Go back home</a>
+					}
+					if p.Link != "" {
+						<a href={ templ.URL(p.Link) } class="text-sm font-semibold text-gray-900">
+							{ p.LinkLabel } <span aria-hidden="true">&rarr;</span>
+						</a>
+					}
+				</div>
+			</div>
+		</main>
+	}
+}

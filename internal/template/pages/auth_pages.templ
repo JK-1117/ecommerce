@@ -1,0 +1,171 @@
+package pages
+
+import "github.com/JK-1117/go-htmx-base/internal/template/components"
+
+script DelayRedirectTo(path string) {
+	setTimeout(() => {
+		htmx.ajax('GET', path);
+	}, 500)
+}
+
+templ SignUpPage() {
+	@Index() {
+		<title>App Brand | Sign Up</title>
+		<div class="flex justify-center items-center">
+			<img
+				class="hidden lg:block object-cover object-center h-screen w-1/2"
+				src="/assets/img/signup_banner.png"
+			/>
+			<div class="flex flex-col justify-center items-center min-h-screen flex-1 lg:bg-teal-950/10">
+				<div id="authForm" class={ components.CssFormCard, "max-w-[500px]" }>
+					<form hx-post="/api/v1/signup" hx-target="#message" hx-sync="this:abort">
+						<div class="sm:mx-auto sm:w-full sm:max-w-sm">
+							<img class="mx-auto h-16 w-auto" src="/assets/img/company_logo.png" alt="Your Company"/>
+							<h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Create a new account</h2>
+						</div>
+						<div class="my-4">
+							<label for="email" class={ components.CssLabel }>Email address</label>
+							<input
+								type="email"
+								name="email"
+								id="email"
+								autocomplete="email"
+								required
+								class={ "w-full", components.CssInputText }
+							/>
+						</div>
+						<div class="my-4">
+							<label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+							@components.PasswordField(components.PasswordFieldParams{ClassName: "w-full", Attrs: templ.Attributes{
+								"id": "password",
+								"name": "password",
+								"autocomplete": "current-password",
+								"required": true,
+							}})
+						</div>
+						<div class="my-4">
+							<button type="submit" class={ "flex w-full justify-center htmx-result", components.CssPrimaryButton }>Sign Up</button>
+							<span class="htmx-indicator">
+								@components.Spinner("text-teal-700 mx-auto")
+							</span>
+						</div>
+						<div id="message"></div>
+					</form>
+					<p class="mt-10 text-center text-sm text-gray-500">
+						Already a member?
+						<a href="/login" hx-select="#authForm" hx-target="#authForm" hx-swap="outerHTML" hx-boost="true" class="font-semibold leading-6 text-teal-700 hover:text-teal-500">Login</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ LoginPage() {
+	@Index() {
+		<title>App Brand | Login</title>
+		<div class="flex justify-center items-center">
+			<img
+				class="hidden lg:block object-cover object-center h-screen w-1/2"
+				src="/assets/img/signup_banner.png"
+			/>
+			<div class="flex flex-col justify-center items-center min-h-screen flex-1 lg:bg-teal-950/10">
+				<div id="authForm" class={ components.CssFormCard, "max-w-[500px]" }>
+					<form
+						hx-post="/api/v1/login"
+						hx-target="#message"
+						hx-sync="this:abort"
+						hx-ext="include-vals"
+						include-vals="redirect:new URLSearchParams(location.search).get('redirect') || ''"
+					>
+						<div class="sm:mx-auto sm:w-full sm:max-w-sm">
+							<img class="mx-auto h-16 w-auto" src="/assets/img/company_logo.png" alt="Your Company"/>
+							<h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
+						</div>
+						<div class="my-4">
+							<label for="email" class={ components.CssLabel }>Email address</label>
+							<input
+								type="email"
+								name="email"
+								id="email"
+								autocomplete="email"
+								required
+								class={ "w-full", components.CssInputText }
+							/>
+						</div>
+						<div class="my-4">
+							<div class="flex items-center justify-between">
+								<label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+								<div class="text-sm">
+									<a href="/forgot-password" hx-select="#authForm" hx-target="#authForm" hx-swap="outerHTML" hx-boost="true" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+								</div>
+							</div>
+							@components.PasswordField(components.PasswordFieldParams{ClassName: "w-full", Attrs: templ.Attributes{
+								"id": "password",
+								"name": "password",
+								"autocomplete": "current-password",
+								"required": true,
+							}})
+						</div>
+						<div class="my-4">
+							<button type="submit" class={ "flex w-full justify-center htmx-result", components.CssPrimaryButton }>Sign in</button>
+							<span class="htmx-indicator">
+								@components.Spinner("text-teal-700 mx-auto")
+							</span>
+						</div>
+						<div id="message"></div>
+					</form>
+					<p class="mt-10 text-center text-sm text-gray-500">
+						Not a member?
+						<a href="/signup" hx-select="#authForm" hx-target="#authForm" hx-swap="outerHTML" hx-boost="true" class="font-semibold leading-6 text-teal-700 hover:text-teal-500">Create a new account</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ ForgotPasswordPage() {
+	@Index() {
+		<title>App Brand | Forgot Password</title>
+		<div class="flex justify-center items-center">
+			<img
+				class="hidden lg:block object-cover object-center h-screen w-1/2"
+				src="/assets/img/signup_banner.png"
+			/>
+			<div class="flex flex-col justify-center items-center min-h-screen flex-1 lg:bg-teal-950/10">
+				<div id="authForm" class={ components.CssFormCard, "max-w-[500px]" }>
+					<form hx-post="/api/v1/forgot-password" hx-target="#message" hx-sync="this:abort">
+						<div class="sm:mx-auto sm:w-full sm:max-w-sm">
+							<img class="mx-auto h-16 w-auto" src="/assets/img/company_logo.png" alt="Your Company"/>
+							<h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Forgot Your Password</h2>
+							<p class="text-sm text-center mb-2">Please enter your account email to receive instructions on resetting your password.</p>
+						</div>
+						<div class="my-4">
+							<label for="email" class={ components.CssLabel }>Email address</label>
+							<input
+								type="email"
+								name="email"
+								id="email"
+								autocomplete="email"
+								required
+								class={ "w-full", components.CssInputText }
+							/>
+						</div>
+						<div class="my-4">
+							<button type="submit" class={ "flex w-full justify-center htmx-result", components.CssPrimaryButton }>Send Email</button>
+							<span class="htmx-indicator">
+								@components.Spinner("text-teal-700 mx-auto")
+							</span>
+						</div>
+						<div id="message"></div>
+					</form>
+					<p class="mt-10 text-center text-sm text-gray-500">
+						Not a member?
+						<a href="/signup" hx-select="#authForm" hx-target="#authForm" hx-swap="outerHTML" hx-boost="true" class="font-semibold leading-6 text-teal-700 hover:text-teal-500">Create a new account</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	}
+}

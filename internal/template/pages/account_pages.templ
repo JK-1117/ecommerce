@@ -1,0 +1,157 @@
+package pages
+
+import "github.com/JK-1117/go-htmx-base/internal/template/components"
+import "github.com/JK-1117/go-htmx-base/internal/services"
+
+templ MePage(a *services.Account) {
+	@Index() {
+		<title>App Brand | User Profile</title>
+		@components.StackedShell(components.Heading("Profile")) {
+			<div id="message"></div>
+			<div id="meForm" class="grid grid-cols-4 gap-y-4 w-full text-gray-900">
+				<label class={ components.CssLabel }>Profile Picture</label>
+				<div class="col-span-3">
+					<img
+						id="profile_picture_preview"
+						class="inline-block h-16 w-16 rounded-full ring-2 ring-gray-400 object-cover object-center"
+						src={ a.ProfilePicture }
+						alt="profile picture"
+					/>
+				</div>
+				<label class={ components.CssLabel }>Name</label>
+				<div class="grid grid-cols-2 gap-4 col-span-3">
+					<div>
+						<label class="block text-sm font-medium leading-6">First Name</label>
+						<span class={ components.CssInputReadonly, "min-h-9" }>{ a.FirstName }</span>
+					</div>
+					<div>
+						<label class="block text-sm font-medium leading-6">Last Name</label>
+						<span class={ components.CssInputReadonly, "min-h-9" }>{ a.LastName }</span>
+					</div>
+				</div>
+				<div class="col-span-3 col-start-2" id="mePageAction">
+					<span class="htmx-result">
+						<button
+							hx-indicator="#mePageAction"
+							class={ components.CssPrimaryButton, "px-6" }
+							hx-get="/me-form"
+							hx-target="#meForm"
+							hx-swap="outerHTML"
+						>
+							Edit
+						</button>
+					</span>
+					<span class="htmx-indicator">
+						@components.Spinner("text-teal-700 mx-auto")
+					</span>
+				</div>
+			</div>
+		}
+	}
+}
+
+script mePageScript() {
+	htmx.on("#profile_picture", "change", evt => {
+		if (evt.target.files.length > 0) {
+			const imageSrc = URL.createObjectURL(evt.target.files[0]);
+			 htmx.find('#profile_picture_preview').setAttribute("src", imageSrc)
+		}
+	})
+}
+
+templ MeForm(a *services.Account) {
+	@Index() {
+		<form
+			id="meForm"
+			class="grid grid-cols-4 gap-y-4 w-full text-gray-900"
+			hx-encoding="multipart/form-data"
+			hx-put="/api/v1/account/me"
+			hx-target="#message"
+			hx-select="#message"
+			hx-swap="outerHTML"
+			hx-disinherit="*"
+		>
+			<label class={ components.CssLabel }>Profile Picture</label>
+			<div class="col-span-3">
+				<label class="inline-block relative cursor-pointer">
+					<img
+						id="profile_picture_preview"
+						class="inline-block h-16 w-16 rounded-full ring-2 ring-gray-400 object-cover object-center"
+						src={ a.ProfilePicture }
+						alt="profile picture"
+					/>
+					<div class="absolute bottom-0 right-0 h-4 w-4 rounded-full ring-2 ring-white bg-white">
+						@components.SVGPlus("h-4 w-4 text-teal-700")
+					</div>
+					<input
+						type="file"
+						name="profile_picture"
+						id="profile_picture"
+						class="hidden"
+						accept="image/*"
+					/>
+				</label>
+			</div>
+			<label class={ components.CssLabel }>Name</label>
+			<div class="grid grid-cols-2 gap-4 col-span-3">
+				<div>
+					<label
+						class="block text-sm font-medium leading-6"
+						for="first_name"
+					>
+						First Name <span class="text-red-700 font-bold">*</span>
+					</label>
+					<input
+						id="first_name"
+						name="first_name"
+						type="text"
+						autocomplete="given-name"
+						class={ "w-full", components.CssInputText }
+						value={ a.FirstName }
+						required
+					/>
+				</div>
+				<div>
+					<label
+						class="block text-sm font-medium leading-6"
+						for="last_name"
+					>
+						Last Name <span class="text-red-700 font-bold">*</span>
+					</label>
+					<input
+						id="last_name"
+						name="last_name"
+						type="text"
+						autocomplete="family-name"
+						class={ "w-full", components.CssInputText }
+						value={ a.LastName }
+						required
+					/>
+				</div>
+			</div>
+			<div class="col-span-3 col-start-2" id="mePageAction">
+				<span class="htmx-result">
+					<button
+						hx-indicator="#mePageAction"
+						class={ components.CssPrimaryButton, "px-6" }
+						type="submit"
+					>
+						Save
+					</button>
+					<a
+						hx-indicator="#mePageAction"
+						class={ components.CssLightButton, "px-4" }
+						href="/me"
+						hx-boost="true"
+					>
+						Cancel
+					</a>
+				</span>
+				<span class="htmx-indicator">
+					@components.Spinner("text-teal-700 mx-auto")
+				</span>
+			</div>
+			@mePageScript()
+		</form>
+	}
+}
